@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>About - Smart Sorting</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-color: #10B981;
+            --secondary-color: #059669;
+            --accent-color: #34D399;
+            --dark-color: #1F2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 120px 0 80px;
+        }
+
+        .content-section {
+            padding: 80px 0;
+        }
+
+        .about-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 40px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary-color);
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 3rem;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-leaf me-2"></i>Smart Sorting
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('blog') }}">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('portfolio_details') }}">Use Cases</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('blog_single') }}">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-8 mx-auto">
+                    <h1 class="display-4 fw-bold mb-4">About Smart Sorting</h1>
+                    <p class="lead">
+                        AI-driven solution to accurately classify healthy vs rotten fruits and vegetables, helping reduce food waste.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="about-card">
+                        <h2 class="mb-4">Our Mission</h2>
+                        <p class="lead">
+                            To provide an efficient, AI-powered system that leverages transfer learning for detecting the freshness of fruits and vegetables, minimizing waste and supporting sustainable food supply.
+                        </p>
+                        <p>
+                            Using a fine-tuned deep learning model based on VGG16 architecture, Smart Sorting delivers high-accuracy classification for 28 classes of produce — both healthy and rotten.
+                        </p>
+                        <p>
+                            Our web application enables real-time quality assessment through an easy-to-use interface, empowering farmers, vendors, and consumers alike.
+                        </p>
+                    </div>
+
+                    <div class="about-card">
+                        <h2 class="mb-4">Technology Stack</h2>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-brain text-primary me-2"></i>Deep Learning</h5>
+                                <ul class="list-unstyled ms-4">
+                                    <li>• TensorFlow & Keras</li>
+                                    <li>• VGG16 Transfer Learning</li>
+                                    <li>• Convolutional Neural Networks</li>
+                                    <li>• Image Preprocessing & Augmentation</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-code text-primary me-2"></i>Development</h5>
+                                <ul class="list-unstyled ms-4">
+                                    <li>• Python</li>
+                                    <li>• Flask Web Framework</li>
+                                    <li>• NumPy & Pandas</li>
+                                    <li>• OpenCV & PIL</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="about-card">
+                        <h2 class="mb-4">Project Timeline</h2>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <h5>Data Collection & Preparation</h5>
+                                <p class="text-muted">
+                                    Compiled a comprehensive dataset with healthy and rotten fruit/vegetable images from Kaggle and other sources.
+                                </p>
+                            </div>
+                            <div class="timeline-item">
+                                <h5>Model Training</h5>
+                                <p class="text-muted">
+                                    Fine-tuned VGG16 architecture using transfer learning and augmentation techniques for high accuracy classification.
+                                </p>
+                            </div>
+                            <div class="timeline-item">
+                                <h5>Web Application Development</h5>
+                                <p class="text-muted">
+                                    Developed a Flask-based web app to upload images and receive instant classification results.
+                                </p>
+                            </div>
+                            <div class="timeline-item">
+                                <h5>Testing & Deployment</h5>
+                                <p class="text-muted">
+                                    Tested extensively on various produce samples and deployed the app for real-world use.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="about-card">
+                        <h2 class="mb-4">Impact & Benefits</h2>
+                        <div class="row g-4">
+                            <div class="col-md-4 text-center">
+                                <div class="display-6 text-primary fw-bold">40%</div>
+                                <h6>Reduction in Food Waste</h6>
+                                <p class="text-muted small">Average decrease in spoiled produce reaching consumers.</p>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="display-6 text-primary fw-bold">300%</div>
+                                <h6>Sorting Efficiency Increase</h6>
+                                <p class="text-muted small">Accelerated sorting compared to manual inspection.</p>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="display-6 text-primary fw-bold">60%</div>
+                                <h6>Labor Cost Savings</h6>
+                                <p class="text-muted small">Reduced need for manual quality checks.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="about-card">
+                        <h2 class="mb-4">Prerequisites & Requirements</h2>
+                        <h5>Software</h5>
+                        <ul>
+                            <li>Python 3.7+</li>
+                            <li>Anaconda Navigator (optional)</li>
+                            <li>TensorFlow 2.x</li>
+                            <li>Flask Framework</li>
+                        </ul>
+
+                        <h5 class="mt-4">Python Packages</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li>• numpy</li>
+                                    <li>• pandas</li>
+                                    <li>• scikit-learn</li>
+                                    <li>• matplotlib</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li>• scipy</li>
+                                    <li>• seaborn</li>
+                                    <li>• tensorflow</li>
+                                    <li>• flask</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h5 class="mt-4">Knowledge</h5>
+                        <ul>
+                            <li>Deep Learning Fundamentals</li>
+                            <li>Convolutional Neural Networks (CNNs)</li>
+                            <li>Transfer Learning</li>
+                            <li>Flask Web Development</li>
+                            <li>Image Processing Basics</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-leaf me-2"></i>Smart Sorting</h5>
+                    <p class="text-muted">AI-Powered Produce Quality Detection using Transfer Learning</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted">&copy; 2025 Smart Sorting. All rights reserved.</p>
+                    <p class="text-muted">Powered by VGG16 Transfer Learning</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

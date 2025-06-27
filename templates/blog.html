@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Features - Smart Sorting</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-color: #10B981;
+            --secondary-color: #059669;
+            --accent-color: #34D399;
+            --dark-color: #1F2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 120px 0 80px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            border: 1px solid #E5E7EB;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .icon-brain { background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); }
+        .icon-camera { background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); }
+        .icon-bolt { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
+        .icon-shield { background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); }
+        .icon-chart { background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); }
+        .icon-mobile { background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%); }
+
+        .tech-specs {
+            background: var(--dark-color);
+            color: white;
+            padding: 80px 0;
+        }
+
+        .spec-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .spec-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-leaf me-2"></i>Smart Sorting
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('blog') }}">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('portfolio_details') }}">Use Cases</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('blog_single') }}">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-8 mx-auto">
+                    <h1 class="display-4 fw-bold mb-4">Advanced Features</h1>
+                    <p class="lead">
+                        Explore the powerful AI and transfer learning technologies behind Smart Sorting's produce quality detection system
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4 mb-5">
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon icon-brain">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="mb-3">Transfer Learning</h3>
+                        <p class="text-muted mb-4">
+                            Utilizes pre-trained VGG16 models fine-tuned for produce freshness classification, achieving excellent accuracy with efficient training.
+                        </p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>VGG16 Base Architecture</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Custom Fine-tuning</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Reduced Training Time</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon icon-camera">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h3 class="mb-3">Computer Vision</h3>
+                        <p class="text-muted mb-4">
+                            High precision image analysis for identifying healthy and rotten produce, supporting multiple image formats and resolutions.
+                        </p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Real-time Image Processing</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Supports High-Resolution Images</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Multi-format Compatibility</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon icon-bolt">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="mb-3">High Performance</h3>
+                        <p class="text-muted mb-4">
+                            Processes thousands of images rapidly with minimal delay, enabling efficient sorting in agricultural and retail environments.
+                        </p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>5000+ Images per Minute</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Low Latency Inference</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Batch Image Processing</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon icon-shield">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="mb-3">Production Ready</h3>
+                        <p class="text-muted mb-4">
+                            Designed for real-world industrial deployment, offering robust reliability and secure, scalable architecture.
+                        </p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>99.9% Uptime Guarantee</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Scalable Infrastructure</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Enterprise-level Security</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon icon-chart">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3 class="mb-3">Analytics Dashboard</h3>
+                        <p class="text-muted mb-4">
+                            Provides insightful analytics and detailed reporting to monitor system performance and produce quality trends.
+                        </p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Real-time Metrics</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Customizable Reports</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Performance Tracking</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon icon-mobile">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 class="mb-3">Smart Integration</h3>
+                        <p class="text-muted mb-4">
+                            Compatible with IoT devices and mobile platforms, enabling seamless integration into existing workflows.
+                        </p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>IoT Device Support</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Mobile Application Integration</li>
+                            <li><i class="fas fa-check text-success me-2"></i>API Access for Custom Workflows</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Specifications -->
+    <section class="tech-specs">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="display-5 fw-bold mb-4">Technical Specifications</h2>
+                    <p class="lead">
+                        Built on a robust VGG16-based deep learning model, optimized for high accuracy and low latency.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="spec-item">
+                        <div class="spec-number">99.2%</div>
+                        <h5>Accuracy Rate</h5>
+                        <p class="text-muted">Produce classification accuracy across 28 categories</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="spec-item">
+                        <div class="spec-number">28</div>
+                        <h5>Produce Classes</h5>
+                        <p class="text-muted">Fruits and vegetables classified</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="spec-item">
+                        <div class="spec-number">224x224</div>
+                        <h5>Input Resolution</h5>
+                        <p class="text-muted">Image size optimized for model input</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="spec-item">
+                        <div class="spec-number">&lt;100ms</div>
+                        <h5>Average Response Time</h5>
+                        <p class="text-muted">Image processing latency per prediction</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h3 class="mb-4">Model Architecture</h3>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="spec-item">
+                                <h6>Base Model</h6>
+                                <p>VGG16 Pre-trained</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="spec-item">
+                                <h6>Framework</h6>
+                                <p>TensorFlow / Keras</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="spec-item">
+                                <h6>Optimizer</h6>
+                                <p>Adam with Learning Rate Scheduling</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-leaf me-2"></i>Smart Sorting</h5>
+                    <p class="text-muted">AI-Powered Produce Quality Detection using Transfer Learning</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted">&copy; 2025 Smart Sorting. All rights reserved.</p>
+                    <p class="text-muted">Powered by VGG16 Transfer Learning</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

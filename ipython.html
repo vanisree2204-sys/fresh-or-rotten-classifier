@@ -1,0 +1,448 @@
+<p style="margin-top:0pt; margin-bottom:8pt; page-break-before:always">
+				# Smart Fruit &amp; Veggie Sorter App - IPython Style
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				import os
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				import numpy as np
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				from werkzeug.utils import secure_filename
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				import tensorflow as tf
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				from tensorflow.keras.models import load_model
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				from tensorflow.keras.preprocessing import image
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				from PIL import Image
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				import io
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				import base64
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				# Flask setup
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				app = Flask(__name__)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				app.secret_key = 'smart_sorting_secret_key_2025'
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				UPLOAD_FOLDER = 'static/uploads'
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				MAX_CONTENT_LENGTH = 16 * 1024 * 1024&#xa0; # 16MB
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				# Load model
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				try:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; model = load_model('healthy_vs_rotten.h5')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; print("Model loaded successfully!")
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				except Exception as e:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; print(f"Error loading model: {e}")
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; model = None
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				CLASS_NAMES = [
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; 'Apple_healthy', 'Apple_rotten', 'Banana_healthy', 'Banana_rotten',
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; 'Bell_pepper_healthy', 'Bell_pepper_rotten', 'Carrot_healthy', 'Carrot_rotten',
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; 'Cucumber_healthy', 'Cucumber_rotten', 'Grapes_healthy', 'Grapes_rotten',
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; 'Lemon_healthy', 'Lemon_rotten', 'Mango_healthy', 'Mango_rotten',
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; 'Orange_healthy', 'Orange_rotten', 'Potato_healthy', 'Potato_rotten',
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; 'Strawberry_healthy', 'Strawberry_rotten', 'Tomato_healthy', 'Tomato_rotten',
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; 'Watermelon_healthy', 'Watermelon_rotten', 'Onion_healthy', 'Onion_rotten'
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				]
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				def allowed_file(filename):
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				def preprocess_image(img_path):
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; try:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; img = image.load_img(img_path, target_size=(224, 224))
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; img_array = image.img_to_array(img)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; img_array = np.expand_dims(img_array, axis=0)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; img_array = tf.keras.applications.vgg16.preprocess_input(img_array)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return img_array
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; except Exception as e:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; print(f"Error preprocessing image: {e}")
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return None
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				def predict_image(img_path):
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; if model is None:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return None, 0, "Model not loaded"
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; try:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; processed_img = preprocess_image(img_path)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; if processed_img is None:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return None, 0, "Error processing image"
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; predictions = model.predict(processed_img)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; predicted_class_idx = np.argmax(predictions[0])
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; confidence = float(predictions[0][predicted_class_idx]) * 100
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; predicted_class = CLASS_NAMES[predicted_class_idx]
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; parts = predicted_class.split('_')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; produce_type = parts[0]
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; condition = parts[1] if len(parts) &gt; 1 else 'unknown'
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return {
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; 'class': predicted_class,
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; 'produce_type': produce_type,
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; 'condition': condition,
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; 'confidence': round(confidence, 2),
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; 'is_healthy': condition.lower() == 'healthy'
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; }
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; except Exception as e:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; print(f"Error making prediction: {e}")
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return None
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				@app.route('/')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				def index():
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; return render_template('index.html')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				@app.route('/blog')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				def blog():
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; return render_template('blog.html')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				@app.route('/blog-single')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				def blog_single():
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; return render_template('blog-single.html')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				@app.route('/portfolio-details')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				def portfolio_details():
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; return render_template('portfolio-details.html')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				@app.route('/predict', methods=['POST'])
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				def predict():
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; if 'file' not in request.files:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; flash('No file selected')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return redirect(request.url)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; file = request.files['file']
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; if file.filename == '':
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; flash('No file selected')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return redirect(request.url)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; if file and allowed_file(file.filename):
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; filename = secure_filename(file.filename)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; file.save(filepath)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; result = predict_image(filepath)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; if result:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return render_template('index.html', prediction=result, image_path=f'uploads/{filename}')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; else:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; flash('Error making prediction')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return redirect(url_for('index'))
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; else:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; flash('Invalid file type. Please upload PNG, JPG, JPEG, or GIF files.')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return redirect(url_for('index'))
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				@app.route('/api/predict', methods=['POST'])
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				def api_predict():
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; if 'file' not in request.files:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return jsonify({'error': 'No file provided'}), 400
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; file = request.files['file']
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; if file.filename == '':
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return jsonify({'error': 'No file selected'}), 400
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; if file and allowed_file(file.filename):
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; filename = secure_filename(file.filename)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; file.save(filepath)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; result = predict_image(filepath)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; if result:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return jsonify({'success': True, 'prediction': result, 'image_url': f'/static/uploads/{filename}'})
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; else:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return jsonify({'error': 'Prediction failed'}), 500
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; else:
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; return jsonify({'error': 'Invalid file type'}), 400
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				@app.route('/health')
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				def health_check():
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; return jsonify({
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; 'status': 'healthy',
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; 'model_loaded': model is not None,
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; 'supported_classes': len(CLASS_NAMES)
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; })
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				if __name__ == '__main__':
+			</p>
+			<p style="margin-top:8pt; margin-bottom:8pt">
+				&#xa0;&#xa0;&#xa0; app.run(debug=True, host='0.0.0.0', port=5000)
+			</p>
+	<p style="bottom: 10px; right: 10px; position: absolute;"><a href="https://wordtohtml.net" target="_blank" style="font-size:11px; color: #d0d0d0">Converted to HTML with WordToHTML.net</a></p>

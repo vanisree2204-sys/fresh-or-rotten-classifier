@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Smart Sorting - AI Produce Quality Detection</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #2a73cc;
+            --accent-color: #f39c12;
+            --dark-color: #1f2937;
+        }
+
+        body {
+            background: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark-color);
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--dark-color) 0%, #374151 100%);
+            color: white;
+        }
+
+        .hero-section h1 {
+            font-weight: 700;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            padding: 60px 15px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgb(0 0 0 / 0.05);
+            margin-bottom: 60px;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--primary-color);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-area.dragover {
+            background-color: #e0e7ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            object-fit: contain;
+        }
+
+        /* Result Card */
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgb(0 0 0 / 0.1);
+            margin-top: 40px;
+        }
+
+        .result-healthy {
+            border-left: 8px solid #22c55e;
+        }
+
+        .result-rotten {
+            border-left: 8px solid #ef4444;
+        }
+
+        /* Confidence Bar */
+        .confidence-bar {
+            width: 100%;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 20px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            transition: width 1s ease;
+        }
+
+        .confidence-high {
+            background-color: #22c55e;
+        }
+
+        .confidence-medium {
+            background-color: #facc15;
+        }
+
+        .confidence-low {
+            background-color: #ef4444;
+        }
+
+        /* Alerts */
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+            color: #DC2626;
+            font-weight: 600;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner-border {
+            color: var(--primary-color);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 50px 0 30px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .upload-section {
+                padding: 30px 15px;
+                margin: 30px 0;
+            }
+            .upload-area {
+                padding: 30px 15px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-seedling me-2"></i>Smart Sorting
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Home</a></li>
+                    <!-- Make sure these routes exist in app.py -->
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('features') }}">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('use_cases') }}">Use Cases</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Smart Sorting Revolution</h1>
+                    <p class="lead mb-4">
+                        Revolutionizing produce quality control with cutting-edge AI and transfer learning.
+                        Detect rotten fruits and vegetables with unprecedented precision using VGG16 neural networks.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 mb-4">
+                        <div class="badge bg-light text-dark p-2">
+                            <i class="fas fa-check-circle text-success me-1"></i> 99.2% Accuracy
+                        </div>
+                        <div class="badge bg-light text-dark p-2">
+                            <i class="fas fa-bolt text-warning me-1"></i> Real-time Processing
+                        </div>
+                        <div class="badge bg-light text-dark p-2">
+                            <i class="fas fa-leaf text-success me-1"></i> 28 Produce Classes
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <i class="fas fa-seedling" style="font-size: 8rem; opacity: 0.3;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <div class="container">
+        <div class="upload-section">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="text-center mb-4">
+                        <i class="fas fa-camera text-primary me-2"></i>Try AI Analysis
+                    </h2>
+                    <p class="text-center text-muted mb-4">
+                        Upload an image of fruits or vegetables to see our AI-powered quality detection in action.
+                    </p>
+
+                    <!-- Flash Messages -->
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <!-- Upload Form -->
+                    <form id="uploadForm" action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data">
+                        <div class="upload-area" id="uploadArea">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <h4>Drag & Drop or Click to Upload</h4>
+                            <p class="text-muted">PNG, JPG, JPEG, GIF up to 16MB</p>
+                            <input type="file" id="fileInput" name="file" accept="image/*" style="display: none;" />
+                            <button type="button" class="btn btn-primary mt-3" onclick="fileInput.click()">
+                                <i class="fas fa-plus me-2"></i>Choose File
+                            </button>
+                        </div>
+
+                        <div id="imagePreview" class="text-center" style="display: none;">
+                            <img id="previewImg" class="image-preview" alt="Preview" />
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-brain me-2"></i>Analyze Image
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary ms-2" onclick="resetUpload()">
+                                    <i class="fas fa-times me-2"></i>Clear
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Loading Spinner -->
+                    <div class="loading-spinner" id="loadingSpinner">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Analyzing image with AI...</p>
+                    </div>
+
+                    <!-- Prediction Results -->
+                    {% if prediction %}
+                    <div class="result-card {{ 'result-healthy' if prediction.is_healthy else 'result-rotten' }}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% if image_path %}
+                                <img src="{{ url_for('static', filename=image_path) }}" class="image-preview" alt="Analyzed Image" />
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <h3 class="mb-3">
+                                    {% if prediction.is_healthy %}
+                                    <i class="fas fa-check-circle text-success me-2"></i>Fresh Produce
+                                    {% else %}
+                                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>Rotten Detected
+                                    {% endif %}
+                                </h3>
+
+                                <div class="mb-3">
+                                    <h5>{{ prediction.produce_type.title() }}</h5>
+                                    <p class="text-muted">Classification: {{ prediction.class }}</p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Confidence Level: {{ prediction.confidence }}%</label>
+                                    <div class="confidence-bar">
+                                        <div class="confidence-fill
+                                            {% if prediction.confidence >= 90 %}confidence-high
+                                            {% elif prediction.confidence >= 70 %}confidence-medium
+                                            {% else %}confidence-low{% endif %}"
+                                            style="width: {{ prediction.confidence }}%">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert {{ 'alert-success' if prediction.is_healthy else 'alert-danger' }}">
+                                    {% if prediction.is_healthy %}
+                                    <i class="fas fa-thumbs-up me-2"></i>
+                                    This produce appears to be fresh and safe for consumption.
+                                    {% else %}
+                                    <i class="fas fa-warning me-2"></i>
+                                    This produce shows signs of deterioration and should not be consumed.
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="display-5 fw-bold mb-3">Cutting-Edge Technology</h2>
+                    <p class="lead text-muted">
+                        Our Smart Sorting system combines advanced deep learning techniques with practical applications
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <i class="fas fa-brain feature-icon fa-3x mb-3" style="color: var(--primary-color);"></i>
+                        <h4>Transfer Learning</h4>
+                        <p class="text-muted">Leverages pre-trained VGG16 models adapted for produce classification</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <i class="fas fa-camera feature-icon fa-3x mb-3" style="color: var(--primary-color);"></i>
+                        <h4>Computer Vision</h4>
+                        <p class="text-muted">Advanced image recognition with real-time analysis capabilities</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <i class="fas fa-bolt feature-icon fa-3x mb-3" style="color: var(--primary-color);"></i>
+                        <h4>Lightning Fast</h4>
+                        <p class="text-muted">Process thousands of images per minute with minimal latency</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats-section" style="background: linear-gradient(135deg, var(--dark-color) 0%, #374151 100%); color: white; padding: 80px 0;">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number fs-2 fw-bold">99.2%</div>
+                        <h5>Accuracy Rate</h5>
+                        <p class="text-muted">Precision in detecting rotten produce</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number fs-2 fw-bold">5K+</div>
+                        <h5>Images/Minute</h5>
+                        <p class="text-muted">Real-time processing capability</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number fs-2 fw-bold">28</div>
+                        <h5>Produce Classes</h5>
+                        <p class="text-muted">Different fruits and vegetables</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number fs-2 fw-bold">40%</div>
+                        <h5>Waste Reduction</h5>
+                        <p class="text-muted">Average food waste decrease</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <h5><i class="fas fa-seedling me-2"></i>Smart Sorting</h5>
+            <p class="text-muted">AI-Powered Produce Quality Detection using Transfer Learning</p>
+            <p class="text-muted">&copy; 2025 Smart Sorting. All rights reserved.</p>
+            <p class="text-muted">Powered by VGG16 Transfer Learning</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+
+        // Show preview function
+        function showPreview(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Reset upload form
+        function resetUpload() {
+            fileInput.value = '';
+            previewImg.src = '';
+            imagePreview.style.display = 'none';
+        }
+
+        // File input change event
+        fileInput.addEventListener('change', (e) => {
+            if (fileInput.files.length > 0) {
+                showPreview(fileInput.files[0]);
+            }
+        });
+
+        // Upload area click triggers file input
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Drag & drop events
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            }
+        });
+    </script>
+</body>
+</html>

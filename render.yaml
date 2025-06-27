@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: smart-sorting
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn app:app
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true

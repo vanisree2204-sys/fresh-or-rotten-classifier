@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Use Cases - Smart Sorting</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-color: #10B981;
+            --secondary-color: #059669;
+            --accent-color: #34D399;
+            --dark-color: #1F2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+            margin-top: 70px; /* To avoid overlap with fixed navbar */
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+
+        .use-case-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 50px;
+        }
+
+        .use-case-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .use-case-header {
+            padding: 40px;
+            background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+        }
+
+        .use-case-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .icon-factory { background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); }
+        .icon-store { background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); }
+        .icon-home { background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%); }
+
+        .use-case-content {
+            padding: 40px;
+        }
+
+        .benefit-item {
+            background: #F0FDF4;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .stats-grid {
+            background: var(--dark-color);
+            color: white;
+            padding: 80px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .implementation-flow {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin: 30px 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #F8FAFC;
+            border-radius: 15px;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-brain me-2"></i>Smart Sorting
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('blog') }}">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('portfolio_details') }}">Use Cases</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('blog_single') }}">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-8 mx-auto">
+                    <h1 class="display-4 fw-bold mb-4">Real-World Applications</h1>
+                    <p class="lead">
+                        Discover how Smart Sorting transforms industries and improves lives across three key implementation scenarios.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="py-5">
+        <div class="container">
+
+            <!-- Scenario 1: Food Processing Plants -->
+            <div class="use-case-card">
+                <div class="row g-0">
+                    <div class="col-lg-6">
+                        <div class="use-case-header h-100 d-flex flex-column justify-content-center">
+                            <div class="use-case-icon icon-factory">
+                                <i class="fas fa-industry"></i>
+                            </div>
+                            <h2 class="mb-3">Food Processing Plants</h2>
+                            <p class="lead text-muted">
+                                Automated sorting systems that process thousands of fruits and vegetables daily, eliminating manual inspection errors and increasing efficiency by 300%.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="use-case-content">
+                            <h4 class="mb-4">Key Benefits</h4>
+                            <div class="benefit-item">
+                                <i class="fas fa-dollar-sign text-success me-2"></i>
+                                <strong>Reduces labor costs by 60%</strong> - Automated quality control eliminates need for manual sorting staff.
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-tachometer-alt text-success me-2"></i>
+                                <strong>Increases sorting speed by 5x</strong> - Process 5,000+ items per minute vs manual sorting.
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-shield-alt text-success me-2"></i>
+                                <strong>Eliminates human error</strong> - Consistent 99.2% accuracy in quality detection.
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-clock text-success me-2"></i>
+                                <strong>24/7 operation capability</strong> - Continuous processing without breaks or shifts.
+                            </div>
+                            <div class="mt-4">
+                                <h5>Implementation Details</h5>
+                                <p class="text-muted">
+                                    Cameras installed along conveyor belts capture high-resolution images of produce. The MobileNet-powered system analyzes each item in real-time, automatically directing rotten items to waste bins while fresh produce continues to packaging.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 2: Supermarket Quality Control -->
+            <div class="use-case-card">
+                <div class="row g-0">
+                    <div class="col-lg-6 order-lg-2">
+                        <div class="use-case-header h-100 d-flex flex-column justify-content-center">
+                            <div class="use-case-icon icon-store">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <h2 class="mb-3">Supermarket Quality Control</h2>
+                            <p class="lead text-muted">
+                                Real-time scanning at receiving docks ensures only fresh produce reaches consumers, maintaining store reputation and reducing waste by up to 40%.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-1">
+                        <div class="use-case-content">
+                            <h4 class="mb-4">Key Benefits</h4>
+                            <div class="benefit-item">
+                                <i class="fas fa-smile text-success me-2"></i>
+                                <strong>Improves customer satisfaction</strong> - Only fresh, quality produce reaches shelves.
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-recycle text-success me-2"></i>
+                                <strong>Reduces product waste</strong> - Early detection prevents spoiled items from reaching consumers.
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-award text-success me-2"></i>
+                                <strong>Maintains quality standards</strong> - Consistent quality control across all shipments.
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-boxes text-success me-2"></i>
+                                <strong>Automated inventory management</strong> - Real-time tracking of produce quality and shelf life.
+                            </div>
+                            <div class="mt-4">
+                                <h5>Implementation Details</h5>
+                                <p class="text-muted">
+                                    Smart scanning stations at receiving docks analyze incoming shipments. The system generates quality reports, automatically updates inventory systems, and alerts staff to items requiring immediate attention or disposal.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 3: Smart Home Integration -->
+            <div class="use-case-card">
+                <div class="row g-0">
+                    <div class="col-lg-6">
+                        <div class="use-case-header h-100 d-flex flex-column justify-content-center">
+                            <div class="use-case-icon icon-home">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <h2 class="mb-3">Smart Home Integration</h2>
+                            <p class="lead text-muted">
+                                Intelligent refrigerators monitor stored produce condition and alert families via smartphone apps when items need immediate consumption.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="use-case-content">
+                            <h4 class="mb-4">Key Benefits</h4>
+                            <div class="benefit-item">
+                                <i class="fas fa-trash-alt text-success me-2"></i>
+                                <strong>Reduces household food waste</strong> - Proactive alerts prevent food from spoiling unnoticed.
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-piggy-bank text-success me-2"></i>
+                                <strong>Saves money on groceries</strong> - Better food management reduces unnecessary purchases.
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-heart text-success me-2"></i>
+                                <strong>Promotes healthier eating</strong> - Encourages consumption of fresh produce before spoilage.
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-mobile-alt text-success me-2"></i>
+                                <strong>Smart notifications</strong> - Real-time alerts via smartphone apps and smart home systems.
+                            </div>
+                            <div class="mt-4">
+                                <h5>Implementation Details</h5>
+                                <p class="text-muted">
+                                    Internal cameras continuously monitor refrigerator contents using AI analysis. The system learns family consumption patterns and sends personalized alerts suggesting recipes or meal plans to use produce before it spoils.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Implementation Flow -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="text-center mb-5">Implementation Process</h2>
+                    <div class="implementation-flow">
+                        <div class="flow-step">
+                            <div class="step-number">1</div>
+                            <div>
+                                <h5>Data Collection</h5>
+                                <p class="text-muted mb-0">Collect or download comprehensive dataset of produce images for training.</p>
+                            </div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="step-number">2</div>
+                            <div>
+                                <h5>Data Preprocessing</h5>
+                                <p class="text-muted mb-0">Clean, augment, and prepare image data for optimal model performance.</p>
+                            </div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="step-number">3</div>
+                            <div>
+                                <h5>Model Building</h5>
+                                <p class="text-muted mb-0">Implement MobileNet transfer learning architecture with custom classification layers.</p>
+                            </div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="step-number">4</div>
+                            <div>
+                                <h5>Training & Testing</h5>
+                                <p class="text-muted mb-0">Train model with validation and achieve target accuracy metrics.</p>
+                            </div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="step-number">5</div>
+                            <div>
+                                <h5>Application Development</h5>
+                                <p class="text-muted mb-0">Build Flask web application with user-friendly interface.</p>
+                            </div>
+                        </div>
+                        <div class="flow-step">
+                            <div class="step-number">6</div>
+                            <div>
+                                <h5>Deployment</h5>
+                                <p class="text-muted mb-0">Deploy production-ready system with monitoring and maintenance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics -->
+    <section class="stats-grid">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="display-5 fw-bold mb-4">Industry Impact</h2>
+                    <p class="lead">
+                        Smart Sorting is making a significant difference across various industries.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <div class="stat-number">150+</div>
+                        <h5>Food Processing Plants</h5>
+                        <p class="text-muted">Currently using Smart Sorting technology</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <div class="stat-number">80+</div>
+                        <h5>Supermarket Chains</h5>
+                        <p class="text-muted">Implementing quality control systems</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <div class="stat-number">10K+</div>
+                        <h5>Smart Home Devices</h5>
+                        <p class="text-muted">Equipped with produce monitoring</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <div class="stat-number">200+</div>
+                        <h5>Agriculture Facilities</h5>
+                        <p class="text-muted">Using automated sorting systems</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-brain me-2"></i>Smart Sorting</h5>
+                    <p class="text-muted">AI-Powered Produce Quality Detection using Transfer Learning</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted">&copy; 2025 Smart Sorting. All rights reserved.</p>
+                    <p class="text-muted">Powered by MobileNet Transfer Learning</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist

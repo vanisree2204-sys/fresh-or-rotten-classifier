@@ -1,0 +1,84 @@
+/* Additional custom styles for Smart Sorting application */
+
+.upload-progress {
+    display: none;
+    margin-top: 20px;
+}
+
+.progress-bar-animated {
+    animation: progress-bar-stripes 1s linear infinite;
+}
+
+.result-animation {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.confidence-meter {
+    position: relative;
+    height: 20px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.confidence-meter-fill {
+    height: 100%;
+    transition: width 2s ease-in-out;
+    border-radius: 10px;
+}
+
+.confidence-high {
+    background: linear-gradient(90deg, #10B981, #34D399);
+}
+
+.confidence-medium {
+    background: linear-gradient(90deg, #F59E0B, #FBBF24);
+}
+
+.confidence-low {
+    background: linear-gradient(90deg, #EF4444, #F87171);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .upload-area {
+        padding: 30px 15px;
+    }
+    
+    .upload-icon {
+        font-size: 3rem;
+    }
+    
+    .result-card {
+        padding: 20px;
+    }
+    
+    .feature-card {
+        margin-bottom: 20px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .upload-area {
+        background: linear-gradient(135deg, #1F2937 0%, #374151 100%);
+        border-color: #10B981;
+        color: white;
+    }
+    
+    .feature-card {
+        background: #1F2937;
+        color: white;
+    }
+}
