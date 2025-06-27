@@ -15,3 +15,8 @@ Thumbs.db
 
 # Ignore other common unnecessary files
 *.log
+python-3.8.16
+
+venv/
+__pycache__/
+*.pyc
