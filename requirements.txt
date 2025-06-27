@@ -5,5 +5,3 @@ Pillow==9.3.0
 Werkzeug==2.2.3
 setuptools>=65.5.0
 wheel
-
-
