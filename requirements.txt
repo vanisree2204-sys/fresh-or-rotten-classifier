@@ -1,6 +1,6 @@
 Flask==2.3.2
-tensorflow-cpu==2.9.1
-numpy==1.23.5
+tensorflow==2.7.0
+numpy==1.21.6
 Pillow==9.4.0
 Werkzeug==2.3.6
 setuptools>=65.5.0
