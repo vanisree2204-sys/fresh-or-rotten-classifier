@@ -38,7 +38,12 @@ CLASS_NAMES = [
     'Strawberry_healthy', 'Strawberry_rotten', 'Tomato_healthy', 'Tomato_rotten',
     'Watermelon_healthy', 'Watermelon_rotten', 'Onion_healthy', 'Onion_rotten'
 ]
+@app.route('/')
+def home():
+    return "Hello, Smart Sorting!"
 
+if __name__ == '__main__':
+    app.run()
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
