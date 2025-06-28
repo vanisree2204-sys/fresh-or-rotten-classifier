@@ -1,6 +1,9 @@
-Flask==2.3.2
-numpy==1.24.3
+setuptools>=65.5.0
+wheel
+pip>=22.3
+Flask==2.2.5
+numpy==1.23.5
 Pillow==10.0.0
-Werkzeug==2.3.6
-gunicorn==21.2.0
-tensorflow==2.9.1
+Werkzeug==2.2.3
+tensorflow-cpu==2.10.0
+gunicorn==20.1.0
