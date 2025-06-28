@@ -22,7 +22,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Load the trained model
 try:
-    model = load_model('converted_model.h5',compile=False)
+    model = load_model('fruitveg_model.h5',compile=False)
     print("Model loaded successfully!")
 except Exception as e:
     print(f"Error loading model: {e}")
@@ -106,18 +106,17 @@ def predict():
     else:
         flash('Invalid file type. Please upload PNG, JPG, JPEG, or GIF files.')
         return redirect(url_for('index'))
-
 @app.route('/features')
 def features():
-    return render_template('features.html')
+    return render_template('blog.html')
 
 @app.route('/use_cases')
 def use_cases():
-    return render_template('use_cases.html')
+    return render_template('portfolio_details.html')
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('blog_single.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
