@@ -117,6 +117,39 @@ def use_cases():
 @app.route('/about')
 def about():
     return render_template('blog_single.html')
+@app.route('/predict', methods=['POST'])
+def predict():
+    if 'file' not in request.files:
+        flash('No file selected')
+        print("No file key in request.files")
+        return redirect(request.url)
+
+    file = request.files['file']
+    if file.filename == '':
+        flash('No file selected')
+        print("File uploaded with empty filename")
+        return redirect(request.url)
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        print(f"Saved file to: {filepath}")
+        result = predict_image(filepath)
+        print(f"Prediction result: {result}")
+        if result:
+            return render_template('index.html',
+                                   prediction=result,
+                                   image_path=f'uploads/{filename}')
+        else:
+            flash('Error making prediction')
+            print("Prediction failed")
+            return redirect(url_for('index'))
+    else:
+        flash('Invalid file type. Please upload PNG, JPG, JPEG, or GIF files.')
+        print("Invalid file type")
+        return redirect(url_for('index'))
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
