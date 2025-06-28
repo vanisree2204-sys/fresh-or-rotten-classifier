@@ -38,12 +38,7 @@ CLASS_NAMES = [
     'Strawberry_healthy', 'Strawberry_rotten', 'Tomato_healthy', 'Tomato_rotten',
     'Watermelon_healthy', 'Watermelon_rotten', 'Onion_healthy', 'Onion_rotten'
 ]
-@app.route('/')
-def home():
-    return "Hello, Smart Sorting!"
 
-if __name__ == '__main__':
-    app.run()
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -112,8 +107,6 @@ def predict():
         flash('Invalid file type. Please upload PNG, JPG, JPEG, or GIF files.')
         return redirect(url_for('index'))
 
-# Add the missing routes for navigation links:
-
 @app.route('/features')
 def features():
     return render_template('features.html')
@@ -125,8 +118,6 @@ def use_cases():
 @app.route('/about')
 def about():
     return render_template('about.html')
-
-# Your other routes if any...
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
