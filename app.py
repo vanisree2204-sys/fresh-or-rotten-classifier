@@ -22,7 +22,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Load the trained model
 try:
-    model = load_model('converted_model.h5')
+    model = load_model('converted_model.h5',compile=False)
     print("Model loaded successfully!")
 except Exception as e:
     print(f"Error loading model: {e}")

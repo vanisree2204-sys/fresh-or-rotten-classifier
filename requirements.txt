@@ -1,6 +1,6 @@
-setuptools>=65.5.0
-wheel
-pip>=22.3
+pip>=23.0
+setuptools>=67.0.0
+wheel>=0.38.0
 Flask==2.2.5
 numpy==1.23.5
 Pillow==10.0.0
